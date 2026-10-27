@@ -22,7 +22,7 @@ disable-model-invocation: true
 
 ## 3. Implementación
 
-- Rama: `feat/<fase-en-minúsculas>-<slug>` (ej. `feat/f03-vehiculos`).
+- Rama: `feat/<fase-en-minúsculas>-<slug>` (ej. `feat/f03-vehiculos`), creada desde `develop` actualizado (`git switch develop && git pull`). Nunca desde `main`.
 - Respetá todas las reglas de `CLAUDE.md`.
 - Commits chicos y descriptivos, en español.
 - Si aparece algo fuera de alcance, anotalo en "Decisiones abiertas" del plan y seguí.

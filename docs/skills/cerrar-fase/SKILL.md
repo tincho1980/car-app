@@ -16,4 +16,4 @@ argument-hint: "[F00-F12]"
    - salida de IA guardada sin confirmación.
 3. **Listo cuando:** confirmá uno por uno los criterios de la fase en `docs/04-plan-implementacion.md`. Lo que no puedas verificar vos (celu, deploy), listalo para que lo pruebe el usuario en **Cómo lo pruebo**.
 4. **Docs:** marcá los checkboxes hechos. Si cambió una decisión o un requerimiento, actualizá `docs/02`, `docs/03` o `docs/05` en el mismo PR. Variables nuevas → `.env.example`.
-5. **PR:** título `F0X · <nombre de la fase>`. En el cuerpo: qué se hizo, qué quedó afuera, qué tiene que probar el usuario y qué variables de entorno hay que cargar en Vercel.
+5. **PR:** contra `develop` (nunca contra `main`, que es producción). Título `F0X · <nombre de la fase>`. En el cuerpo: qué se hizo, qué quedó afuera, qué tiene que probar el usuario y qué variables de entorno hay que cargar en Vercel.

@@ -6,7 +6,8 @@ Plan paso a paso para construir la app con Claude Code. Cada fase es un **corte 
 
 ## Cómo trabajamos
 
-1. **Una fase = una rama = un PR** (`feat/f03-vehiculos`). No se arranca la siguiente sin mergear la anterior.
+1. **Una fase = una rama = un PR** (`feat/f03-vehiculos`). La rama sale de `develop` y el PR va contra `develop`. No se arranca la siguiente sin mergear la anterior.
+   - **Ramas:** `develop` es el entorno de desarrollo; `main` es producción. A `main` solo se llega con un PR `develop` → `main`; nunca se abre una rama ni un PR directo contra `main`.
 2. En Claude Code: `/implementar-fase F03` (skill del repo; para la **F00**, que es la que las instala, pedí: _"Leé docs/skills/implementar-fase/SKILL.md y seguilo para la F00"_). Arranca en **plan mode**: lee la fase, propone un plan, y recién con tu OK escribe código.
 3. Antes de cada fase, hacé vos las tareas marcadas **👤 Vos**: cuentas, claves, decisiones. Claude Code no las puede hacer.
 4. Cada fase cierra cuando se cumple **Listo cuando** y pasaste por **Cómo lo pruebo** en tu celu, sobre el deploy de preview.
@@ -59,7 +60,7 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 - [ ] Cuenta Vercel vinculada a GitHub.
 
 🤖 **Claude Code**
-- [ ] `git init` en la raíz, rama `main`, remoto de GitHub.
+- [x] `git init` en la raíz, ramas `main` (producción) y `develop` (desarrollo), remoto de GitHub.
 - [ ] Copiar `docs/skills/*` a `.claude/skills/` y versionarlas.
 - [ ] Scaffold con `create-next-app` (Next.js 16, App Router, TS, `src/`, Tailwind, ESLint). **Ojo:** la carpeta ya tiene `docs/` y `CLAUDE.md`, y `create-next-app` se niega a usar una carpeta con archivos. Generarlo en una carpeta temporal y mover el contenido a la raíz sin pisar nada existente.
 - [ ] TypeScript `strict`, Prettier, alias `@/`.
