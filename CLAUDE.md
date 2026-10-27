@@ -19,6 +19,10 @@ La fuente está en `docs/skills/`; en F00 se copian a `.claude/skills/`, que es 
 
 Next.js 16 (App Router, `src/`) · TypeScript strict · Tailwind + shadcn/ui · MongoDB Atlas con el driver oficial `mongodb` + Zod (sin ORM/ODM) · Auth.js (Google, JWT) · Cloudflare R2 · Vercel AI SDK + Anthropic · Web Push (`web-push`) · Vercel (Hobby) + Vercel Cron · Vitest.
 
+## Ramas
+
+`develop` es el entorno de desarrollo y `main` es producción. Toda rama nueva sale de `develop` y se mergea a `develop` por PR. A `main` solo se llega con un PR `develop` → `main`.
+
 ## Comandos
 
 ```bash
