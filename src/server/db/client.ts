@@ -10,4 +10,4 @@ export const client = g._mongo ?? new MongoClient(env.MONGODB_URI, { maxPoolSize
 if (process.env.NODE_ENV !== 'production') g._mongo = client;
 attachDatabasePool(client);
 
-export const db = client.db('carapp');
+export const db = client.db(env.MONGODB_DB);
