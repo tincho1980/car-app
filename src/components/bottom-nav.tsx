@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Gauge, Settings, type LucideIcon } from 'lucide-react';
 import { cn } from 'cn';
-import { AddSheet } from '@/components/add-sheet';
+import { AddSheet, type AddSheetVehicle } from '@/components/add-sheet';
 
 // Bottom Nav del diseño: Inicio · ＋ Cargar · Ajustes.
-export function BottomNav() {
+export function BottomNav({ vehicles, today }: { vehicles: AddSheetVehicle[]; today: string }) {
   const pathname = usePathname();
   const isSettings = pathname.startsWith('/ajustes');
 
@@ -16,7 +16,7 @@ export function BottomNav() {
       <div className="mx-auto grid h-[72px] max-w-[430px] grid-cols-3 items-center">
         <NavLink href="/" label="Inicio" icon={Gauge} active={!isSettings} />
         <div className="flex justify-center">
-          <AddSheet />
+          <AddSheet vehicles={vehicles} today={today} />
         </div>
         <NavLink href="/ajustes" label="Ajustes" icon={Settings} active={isSettings} />
       </div>

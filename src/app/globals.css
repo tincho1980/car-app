@@ -76,7 +76,25 @@
   --radius: 0.75rem;
 }
 
+/* Tarjeta odómetro: oscura en los dos modos, con texto y botón claros (frames 02 y 13). */
+:root {
+  --odo-text: var(--surface);
+  --odo-button: var(--surface);
+  --odo-button-text: var(--text);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --odo-text: var(--text);
+    --odo-button: var(--text);
+    --odo-button-text: var(--bg);
+  }
+}
+
 @theme inline {
+  --color-odo-text: var(--odo-text);
+  --color-odo-button: var(--odo-button);
+  --color-odo-button-text: var(--odo-button-text);
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);

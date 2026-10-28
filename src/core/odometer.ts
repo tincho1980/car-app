@@ -70,3 +70,30 @@ export function toVirtualKm(odometer: VirtualOdometer, km: number, date: Date): 
 function sortByDate(readings: OdometerReading[]): OdometerReading[] {
   return [...readings].sort((a, b) => a.date.getTime() - b.date.getTime());
 }
+
+export type OdometerSummary = {
+  lastKm: number;
+  lastDate: Date;
+  kmPerDay: number;
+  readingsCount: number;
+};
+
+// Caché del odómetro que se guarda en el auto: última lectura real (en el tablero actual),
+// km/día (RN-03, continuo aunque haya cambios de tablero) y cantidad de lecturas.
+export function odometerSummary(
+  readings: OdometerReading[],
+  defaultKmPerDay: number,
+  today: Date,
+): OdometerSummary {
+  const sorted = sortByDate(readings);
+  const last = sorted.findLast((r) => r.date <= today) ?? sorted[sorted.length - 1];
+  if (!last) throw new Error('Un auto tiene al menos una lectura de odómetro');
+
+  const odometer = virtualOdometer(sorted, defaultKmPerDay);
+  return {
+    lastKm: last.km,
+    lastDate: last.date,
+    kmPerDay: kmPerDay(odometer.readings, today, defaultKmPerDay),
+    readingsCount: sorted.length,
+  };
+}
