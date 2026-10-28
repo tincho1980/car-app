@@ -75,7 +75,7 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 - [x] `vercel.json` con la región de funciones igual a la del cluster (`gru1`, São Paulo).
 
 👤 **Vos, al cerrar**
-- [ ] Importar el repo en Vercel con `main` como rama de producción; cargar `MONGODB_URI` para Production y Preview.
+- [x] Importar el repo en Vercel con `main` como rama de producción; cargar `MONGODB_URI` para Production y Preview.
 
 **Cómo lo pruebo:** abrir `/api/health` en el deploy de `develop` (`https://<proyecto>-git-develop-<usuario>.vercel.app/api/health`) → `{ ok: true }`.
 **Listo cuando:** health OK en el deploy de `develop` y el CI pasa en un PR.
@@ -85,17 +85,17 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 **Objetivo:** solo vos podés entrar y la app se instala en el celu.
 
 👤 **Vos, antes**
-- [ ] Google Cloud Console → crear cliente OAuth (tipo Web) con callbacks `http://localhost:3000/api/auth/callback/google` y `https://<proyecto>.vercel.app/api/auth/callback/google`.
-- [ ] Cargar `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ALLOWED_EMAIL` en `.env.local` y en Vercel.
+- [x] Google Cloud Console → crear cliente OAuth (tipo Web) con callbacks `http://localhost:3000/api/auth/callback/google` y `https://<proyecto>.vercel.app/api/auth/callback/google`.
+- [x] Cargar `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `ALLOWED_EMAIL` en `.env.local` y en Vercel.
 
 🤖 **Claude Code**
-- [ ] Auth.js, proveedor Google, sesión JWT, **sin adapter**.
-- [ ] Callback `signIn` que rechaza todo email ≠ `ALLOWED_EMAIL`.
-- [ ] `src/proxy.ts`: sin sesión → `/login`. No consulta la base.
-- [ ] `requireUser()` en `src/server/auth.ts` (devuelve `ownerId` o lanza).
-- [ ] Tokens de `docs/design/README.md` como CSS variables (claro/oscuro) mapeadas en Tailwind/shadcn; fuentes Inter y JetBrains Mono con `next/font`; `lucide-react`.
-- [ ] Layout mobile-first y barra inferior según 05-pantallas y el frame 00/02 del diseño (Inicio · ＋ Cargar · Ajustes); páginas placeholder.
-- [ ] `manifest.webmanifest`, íconos, `public/sw.js` mínimo registrado.
+- [x] Auth.js, proveedor Google, sesión JWT, **sin adapter**.
+- [x] Callback `signIn` que rechaza todo email ≠ `ALLOWED_EMAIL`.
+- [x] `src/proxy.ts`: sin sesión → `/login`. No consulta la base.
+- [x] `requireUser()` en `src/server/auth.ts` (devuelve `ownerId` o lanza).
+- [x] Tokens de `docs/design/README.md` como CSS variables (claro/oscuro) mapeadas en Tailwind/shadcn; fuentes Inter y JetBrains Mono con `next/font`; `lucide-react`.
+- [x] Layout mobile-first y barra inferior según 05-pantallas y el frame 00/02 del diseño (Inicio · ＋ Cargar · Ajustes); páginas placeholder.
+- [x] `manifest.webmanifest`, íconos, `public/sw.js` mínimo registrado.
 
 **Cómo lo pruebo:** entrar desde el Samsung con tu cuenta; probar otra cuenta Google (debe rechazarla); "Agregar a pantalla de inicio".
 **Listo cuando:** login OK, otra cuenta rechazada, app instalada.
