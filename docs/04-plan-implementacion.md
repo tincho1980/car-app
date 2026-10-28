@@ -2,15 +2,15 @@
 
 _Proyecto personal · Martín · v2 · 27/10/2026_
 
-Plan paso a paso para construir la app con Claude Code. Cada fase es un **corte vertical deployable**: al cerrarla, la app funciona (con menos cosas) y está en producción.
+Plan paso a paso para construir la app con Claude Code. Cada fase es un **corte vertical deployable**: al cerrarla, la app funciona (con menos cosas) y está deployada en `develop`.
 
 ## Cómo trabajamos
 
 1. **Una fase = una rama = un PR** (`feat/f03-vehiculos`). La rama sale de `develop` y el PR va contra `develop`. No se arranca la siguiente sin mergear la anterior.
-   - **Ramas:** `develop` es el entorno de desarrollo; `main` es producción. A `main` solo se llega con un PR `develop` → `main`; nunca se abre una rama ni un PR directo contra `main`.
+   - **Ramas:** `develop` es el entorno de desarrollo; `main` es producción. A `main` solo se llega con un PR `develop` → `main`; nunca se abre una rama ni un PR directo contra `main`. El paso de `develop` a `main` se hace cuando lo pedís, no al cerrar cada fase.
 2. En Claude Code: `/implementar-fase F03` (skill del repo; para la **F00**, que es la que las instala, pedí: _"Leé docs/skills/implementar-fase/SKILL.md y seguilo para la F00"_). Arranca en **plan mode**: lee la fase, propone un plan, y recién con tu OK escribe código.
 3. Antes de cada fase, hacé vos las tareas marcadas **👤 Vos**: cuentas, claves, decisiones. Claude Code no las puede hacer.
-4. Cada fase cierra cuando se cumple **Listo cuando** y pasaste por **Cómo lo pruebo** en tu celu, sobre el deploy de preview.
+4. Cada fase cierra cuando se cumple **Listo cuando** y pasaste por **Cómo lo pruebo** en tu celu, sobre el deploy de `develop` (preview de Vercel).
 5. **Cada pantalla se implementa mirando su frame en `docs/design/`** (ver tabla en `docs/design/README.md`).
 6. Cambios de alcance → se anotan en [Decisiones abiertas](#decisiones-abiertas) y se actualiza `02-requerimientos.md`. Nunca "de paso" en el código.
 
@@ -61,23 +61,24 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 
 🤖 **Claude Code**
 - [x] `git init` en la raíz, ramas `main` (producción) y `develop` (desarrollo), remoto de GitHub.
-- [ ] Copiar `docs/skills/*` a `.claude/skills/` y versionarlas.
-- [ ] Scaffold con `create-next-app` (Next.js 16, App Router, TS, `src/`, Tailwind, ESLint). **Ojo:** la carpeta ya tiene `docs/` y `CLAUDE.md`, y `create-next-app` se niega a usar una carpeta con archivos. Generarlo en una carpeta temporal y mover el contenido a la raíz sin pisar nada existente.
-- [ ] TypeScript `strict`, Prettier, alias `@/`.
-- [ ] shadcn/ui inicializado.
-- [ ] Vitest (`npm test`) con un test de ejemplo.
-- [ ] `src/env.ts`: variables de entorno validadas con Zod (el build falla si falta alguna).
-- [ ] `src/server/db/client.ts` según 03-arquitectura §2.1.
-- [ ] `GET /api/health` → `db.command({ ping: 1 })` → `{ ok: true }`.
-- [ ] `.env.example` con todas las variables (sin valores).
-- [ ] GitHub Actions: `typecheck`, `lint`, `test` en cada PR.
-- [ ] Scripts: `typecheck`, `db:indexes` (vacío por ahora), `db:seed` (vacío por ahora).
+- [x] Copiar `docs/skills/*` a `.claude/skills/` y versionarlas.
+- [x] Scaffold con `create-next-app` (Next.js 16, App Router, TS, `src/`, Tailwind, ESLint). **Ojo:** la carpeta ya tiene `docs/` y `CLAUDE.md`, y `create-next-app` se niega a usar una carpeta con archivos. Generarlo en una carpeta temporal y mover el contenido a la raíz sin pisar nada existente.
+- [x] TypeScript `strict`, Prettier, alias `@/`.
+- [x] shadcn/ui inicializado.
+- [x] Vitest (`npm test`) con un test de ejemplo.
+- [x] `src/env.ts`: variables de entorno validadas con Zod (el build falla si falta alguna).
+- [x] `src/server/db/client.ts` según 03-arquitectura §2.1.
+- [x] `GET /api/health` → `db.command({ ping: 1 })` → `{ ok: true }`.
+- [x] `.env.example` con todas las variables (sin valores).
+- [x] GitHub Actions: `typecheck`, `lint`, `test` en cada PR.
+- [x] Scripts: `typecheck`, `db:indexes` (vacío por ahora), `db:seed` (vacío por ahora).
+- [x] `vercel.json` con la región de funciones igual a la del cluster (`gru1`, São Paulo).
 
 👤 **Vos, al cerrar**
-- [ ] Importar el repo en Vercel; región de funciones igual a la del cluster; cargar `MONGODB_URI`.
+- [ ] Importar el repo en Vercel con `main` como rama de producción; cargar `MONGODB_URI` para Production y Preview.
 
-**Cómo lo pruebo:** abrir `https://<proyecto>.vercel.app/api/health` → `{ ok: true }`.
-**Listo cuando:** health OK en producción y el CI pasa en un PR.
+**Cómo lo pruebo:** abrir `/api/health` en el deploy de `develop` (`https://<proyecto>-git-develop-<usuario>.vercel.app/api/health`) → `{ ok: true }`.
+**Listo cuando:** health OK en el deploy de `develop` y el CI pasa en un PR.
 
 ## F01 · Auth y shell PWA
 
@@ -127,7 +128,7 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 - [ ] `npm run db:seed`: crea el Palio de ejemplo con lecturas, solo en desarrollo.
 
 **Cómo lo pruebo:** dar de alta el **Fiat Palio 1.4 Fire 2011, 120.000 km**; cargar una lectura; intentar cargar un km menor (debe frenar).
-**Listo cuando:** el Palio existe en producción y el km estimado avanza día a día.
+**Listo cuando:** el Palio existe en el deploy de `develop` y el km estimado avanza día a día.
 
 ## F04 · Plan de mantenimiento (sin IA)
 

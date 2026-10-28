@@ -1,0 +1,5 @@
+# La documentación y las skills se editan a mano.
+docs/
+.claude/
+CLAUDE.md
+package-lock.json

@@ -32,11 +32,11 @@ Cada función de Vercel puede levantar su propio cliente. Si se crea un MongoCli
 import 'server-only';
 import { MongoClient } from 'mongodb';
 import { attachDatabasePool } from '@vercel/functions';
+import { env } from '@/env';
 
-const uri = process.env.MONGODB_URI!;
 const g = globalThis as unknown as { _mongo?: MongoClient };
 
-export const client = g._mongo ?? new MongoClient(uri, { maxPoolSize: 5 });
+export const client = g._mongo ?? new MongoClient(env.MONGODB_URI, { maxPoolSize: 5 });
 if (process.env.NODE_ENV !== 'production') g._mongo = client;
 attachDatabasePool(client);
 
@@ -54,7 +54,7 @@ El driver de Mongo necesita Node (sockets TCP). En Next.js 16 el proxy.ts (ex mi
 - Idempotente: cada ítem guarda el último estado notificado. Si el cron corre dos veces o se reintenta, no manda push duplicados.
 - Proceso secuencial por vehículo (son 1–3 autos): no hace falta cola. Con Hobby no hay cron cada hora; si más adelante se quiere, se suma un ping externo gratis (ej. cron-job.org) al mismo endpoint.
 - Atlas M0 no admite IPs fijas de Vercel: hay que habilitar 0.0.0.0/0 en Network Access con un usuario de base con contraseña larga y permisos solo sobre la base carapp (o usar la integración Atlas de Vercel, que lo configura sola).
-- Región: crear el cluster M0 y fijar la región de funciones de Vercel en el mismo lugar (idealmente São Paulo, si M0 la ofrece al crearlo). Si no, la misma región de EE. UU. en ambos. Lo que importa es que coincidan.
+- Región: crear el cluster M0 y fijar la región de funciones de Vercel en el mismo lugar (idealmente São Paulo, si M0 la ofrece al crearlo). Si no, la misma región de EE. UU. en ambos. Lo que importa es que coincidan. Elegido: São Paulo (Atlas `sa-east-1`, Vercel `gru1`, fijado en `vercel.json`).
 
 ### 2.4 Por qué no Cloudflare Workers
 
@@ -171,6 +171,8 @@ carapp/
 - Secretos solo en variables de entorno de Vercel. Usuario de Atlas con permisos únicamente sobre carapp.
 
 ## 9. Variables de entorno
+
+`src/env.ts` las valida con Zod y `next.config.ts` lo importa, así el build falla si falta alguna. Valida solo las que la app ya usa: cada fase suma las suyas. `.env.example` lista todas. En local van en `.env.local`.
 
 | Variable | Para qué |
 |---|---|
