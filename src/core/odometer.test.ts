@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { estimatedKm, kmPerDay, toVirtualKm, virtualOdometer } from '@/core/odometer';
+import {
+  estimatedKm,
+  kmPerDay,
+  odometerSummary,
+  toVirtualKm,
+  virtualOdometer,
+} from '@/core/odometer';
 
 const d = (iso: string) => new Date(`${iso}T00:00:00Z`);
 const today = d('2026-10-24');
@@ -101,5 +107,38 @@ describe('cambio de odómetro (odómetro virtual)', () => {
     const odo = virtualOdometer(readings.slice(0, 2), 40);
     expect(odo.offset).toBe(0);
     expect(toVirtualKm(odo, 112_000, d('2026-07-15'))).toBe(112_000);
+  });
+});
+
+describe('odometerSummary (caché del auto)', () => {
+  it('última lectura real, km/día y cantidad de lecturas', () => {
+    const readings = [
+      { date: d('2026-10-01'), km: 120_000 },
+      { date: d('2026-07-03'), km: 115_500 },
+    ];
+    expect(odometerSummary(readings, 40, today)).toEqual({
+      lastKm: 120_000,
+      lastDate: d('2026-10-01'),
+      kmPerDay: 50,
+      readingsCount: 2,
+    });
+  });
+
+  it('con una sola lectura usa el km/día default', () => {
+    expect(odometerSummary([{ date: d('2026-10-01'), km: 120_000 }], 40, today)).toMatchObject({
+      lastKm: 120_000,
+      kmPerDay: 40,
+      readingsCount: 1,
+    });
+  });
+
+  it('después de un cambio de tablero, el último km es el del tablero nuevo', () => {
+    const readings = [
+      { date: d('2026-06-01'), km: 110_000 },
+      { date: d('2026-09-01'), km: 114_600 },
+      { date: d('2026-09-11'), km: 0, odometerReset: true },
+      { date: d('2026-10-01'), km: 1_000 },
+    ];
+    expect(odometerSummary(readings, 40, today)).toMatchObject({ lastKm: 1_000, kmPerDay: 50 });
   });
 });
