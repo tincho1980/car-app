@@ -75,7 +75,7 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 - [x] `vercel.json` con la región de funciones igual a la del cluster (`gru1`, São Paulo).
 
 👤 **Vos, al cerrar**
-- [ ] Importar el repo en Vercel con `main` como rama de producción; cargar `MONGODB_URI` para Production y Preview.
+- [x] Importar el repo en Vercel con `main` como rama de producción; cargar `MONGODB_URI` para Production y Preview.
 
 **Cómo lo pruebo:** abrir `/api/health` en el deploy de `develop` (`https://<proyecto>-git-develop-<usuario>.vercel.app/api/health`) → `{ ok: true }`.
 **Listo cuando:** health OK en el deploy de `develop` y el CI pasa en un PR.
