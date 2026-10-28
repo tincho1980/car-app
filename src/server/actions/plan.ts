@@ -18,7 +18,7 @@ import { requireUser } from '@/server/auth';
 import { listReadings } from '@/server/db/repos/odometer-readings';
 import { getDraftProposal, setProposalStatus } from '@/server/db/repos/plan-proposals';
 import { getVehicle, type Vehicle } from '@/server/db/repos/vehicles';
-import { PlanItemInputSchema, ProposalItemSchema, type PlanItem } from '@/server/db/schemas/plan';
+import { PlanItemFieldsSchema, PlanItemInputSchema, type PlanItem } from '@/server/db/schemas/plan';
 import { ensureDraftProposal, savePlan } from '@/server/plan/service';
 
 async function ownedVehicle(vehicleId: string): Promise<{ ownerId: string; vehicle: Vehicle }> {
@@ -40,13 +40,11 @@ export async function startPlan(vehicleId: string): Promise<void> {
   redirect(`/autos/${vehicleId}/plan/revisar`);
 }
 
-const ReviewItemSchema = ProposalItemSchema.pick({
-  itemId: true,
-  intervalKm: true,
-  intervalMonths: true,
-  included: true,
-  verified: true,
-});
+// Lo que cambia en la revisión. Zod no permite .pick() sobre un esquema con refinamientos:
+// se arma desde los campos base y se repite la regla de "al menos un intervalo".
+const ReviewItemSchema = PlanItemFieldsSchema.pick({ intervalKm: true, intervalMonths: true })
+  .extend({ itemId: z.string().min(1), included: z.boolean(), verified: z.boolean() })
+  .refine((i) => i.intervalKm !== undefined || i.intervalMonths !== undefined);
 
 // RF-05 / RN-14: el plan recién genera alertas al aprobarlo. Los críticos incluidos tienen
 // que estar verificados con el manual o el taller. Los descartados quedan como "no aplica".

@@ -104,6 +104,8 @@ async function Dues({
 }) {
   const status = await loadPlanStatus(ownerId, vehicle, today);
   const items = new Map(vehicle.plan.map((i) => [i.itemId, i]));
+  // Paso del estado inicial de cada ítem activo, para cargar el dato de los "Sin dato".
+  const steps = new Map(vehicle.plan.filter((i) => i.active).map((i, n) => [i.itemId, n + 1]));
   const rows = [...status.items].sort(
     (a, b) =>
       STATE_ORDER[a.state] - STATE_ORDER[b.state] ||
@@ -133,7 +135,17 @@ async function Dues({
       <ul className="flex flex-col gap-3">
         {rows.map((row) => {
           const item = items.get(row.itemId);
-          return item && <ItemRow key={row.itemId} item={item} status={row} today={today} />;
+          return (
+            item && (
+              <ItemRow
+                key={row.itemId}
+                item={item}
+                status={row}
+                today={today}
+                lastDoneHref={`/autos/${vehicle.id}/plan/estado-inicial?item=${steps.get(row.itemId)}`}
+              />
+            )
+          );
         })}
       </ul>
     </section>

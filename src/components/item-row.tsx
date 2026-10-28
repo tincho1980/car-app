@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { ShieldAlert } from 'lucide-react';
 import { cn } from 'cn';
 import { consumedFraction } from '@/core/last-done';
@@ -13,10 +14,13 @@ export function ItemRow({
   item,
   status,
   today,
+  lastDoneHref,
 }: {
   item: PlanItem;
   status: ItemStatus;
   today: Date;
+  // "Sin dato": a dónde ir para cargar el último realizado.
+  lastDoneHref?: string;
 }) {
   const style = STATE_STYLES[status.state];
   const fraction = consumedFraction(item, status, today);
@@ -48,8 +52,21 @@ export function ItemRow({
           <StatusPill state={status.state} />
         </div>
         <p className="mt-1 text-sm text-text-2">
-          {dueText(status, today)}
-          {status.lastDone?.estimated && ' (último dato estimado)'}
+          {status.state === 'unknown' && lastDoneHref ? (
+            <>
+              No sabemos cuándo se hizo.{' '}
+              <Link href={lastDoneHref} className="font-semibold text-accent">
+                Cargá el último dato
+              </Link>
+            </>
+          ) : (
+            dueText(status, today)
+          )}
+          {/* Lo estimado solo importa si el ítem vence por km y por tiempo. */}
+          {status.lastDone?.estimated &&
+            item.intervalKm !== undefined &&
+            item.intervalMonths !== undefined &&
+            ' (último dato estimado)'}
         </p>
         {status.state !== 'unknown' && (
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
