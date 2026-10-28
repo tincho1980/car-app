@@ -43,7 +43,10 @@ function vehicleFromForm(formData: FormData) {
 }
 
 // Alta (RF-03): el auto y su primera lectura de odómetro van juntos.
-export async function createVehicle(_prev: FormState, formData: FormData): Promise<FormState> {
+export async function createVehicle(
+  _prev: FormState | undefined,
+  formData: FormData,
+): Promise<FormState> {
   const { ownerId } = await requireUser();
   const parsed = VehicleInputSchema.safeParse(vehicleFromForm(formData));
   if (!parsed.success) return { errors: fieldErrors(parsed.error), values: formValues(formData) };
@@ -85,7 +88,7 @@ export async function createVehicle(_prev: FormState, formData: FormData): Promi
 
 export async function updateVehicle(
   id: string,
-  _prev: FormState,
+  _prev: FormState | undefined,
   formData: FormData,
 ): Promise<FormState> {
   const { ownerId } = await requireUser();
@@ -118,7 +121,7 @@ export async function unarchiveVehicle(id: string): Promise<void> {
 // Lectura rápida de odómetro (RF-15), con la validación de RN-07.
 export async function addReading(
   vehicleId: string,
-  _prev: FormState,
+  _prev: FormState | undefined,
   formData: FormData,
 ): Promise<FormState> {
   const { ownerId } = await requireUser();
@@ -149,6 +152,7 @@ export async function addReading(
     return {
       errors: { km: `Es ${comparison} que ${which} (${formatKm(validation.reading.km)} km).` },
       values,
+      offerReset: validation.reason === 'below-previous',
     };
   }
 

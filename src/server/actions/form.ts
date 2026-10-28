@@ -7,6 +7,8 @@ export type FormState = {
   errors?: Record<string, string>;
   // Lo que se envió, para que el formulario no se vacíe si hay errores.
   values?: Record<string, string>;
+  // Km menor a una lectura anterior: ofrecer "Cambié el tablero u odómetro" (RN-07).
+  offerReset?: boolean;
 };
 
 export function fieldErrors(error: z.ZodError): Record<string, string> {
