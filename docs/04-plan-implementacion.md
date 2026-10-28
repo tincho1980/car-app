@@ -133,13 +133,13 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 ## F04 · Plan de mantenimiento (sin IA)
 
 🤖 **Claude Code**
-- [ ] `src/lib/template-plan.ts` con el Anexo A de 02-requerimientos.
-- [ ] Colección `planProposals`; al crear un auto se genera una propuesta desde la plantilla (generador detrás de una interfaz `PlanProposer`, para enchufar la IA en F10).
-- [ ] `/autos/[id]/plan/revisar` según 05-pantallas: banner, editar/descartar, críticos con check, **Aprobar plan**.
-- [ ] Al aprobar: copiar a `vehicle.plan` con `origin` y `approvedAt` (RN-14).
-- [ ] `/autos/[id]/plan/estado-inicial` (RF-08).
-- [ ] `/autos/[id]/plan`: editar, agregar, "no aplica" (RF-06, 07).
-- [ ] Recalcular `plan[].status` en cada cambio.
+- [x] `src/lib/template-plan.ts` con el Anexo A de 02-requerimientos.
+- [x] Colección `planProposals`; al crear un auto se genera una propuesta desde la plantilla (generador detrás de una interfaz `PlanProposer`, para enchufar la IA en F10).
+- [x] `/autos/[id]/plan/revisar` según 05-pantallas: banner, editar/descartar, críticos con check, **Aprobar plan**.
+- [x] Al aprobar: copiar a `vehicle.plan` con `origin` y `approvedAt` (RN-14).
+- [x] `/autos/[id]/plan/estado-inicial` (RF-08).
+- [x] `/autos/[id]/plan`: editar, agregar, "no aplica" (RF-06, 07).
+- [x] Recalcular `plan[].status` en cada cambio.
 
 👤 **Vos, durante la revisión del plan del Palio:** tener a mano el manual o el último ticket del taller. Verificar especialmente el intervalo de la **correa de distribución** del motor Fire 1.4 y cuándo se cambió por última vez.
 
