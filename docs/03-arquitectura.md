@@ -32,11 +32,11 @@ Cada función de Vercel puede levantar su propio cliente. Si se crea un MongoCli
 import 'server-only';
 import { MongoClient } from 'mongodb';
 import { attachDatabasePool } from '@vercel/functions';
+import { env } from '@/env';
 
-const uri = process.env.MONGODB_URI!;
 const g = globalThis as unknown as { _mongo?: MongoClient };
 
-export const client = g._mongo ?? new MongoClient(uri, { maxPoolSize: 5 });
+export const client = g._mongo ?? new MongoClient(env.MONGODB_URI, { maxPoolSize: 5 });
 if (process.env.NODE_ENV !== 'production') g._mongo = client;
 attachDatabasePool(client);
 
@@ -171,6 +171,8 @@ carapp/
 - Secretos solo en variables de entorno de Vercel. Usuario de Atlas con permisos únicamente sobre carapp.
 
 ## 9. Variables de entorno
+
+`src/env.ts` las valida con Zod y `next.config.ts` lo importa, así el build falla si falta alguna. Valida solo las que la app ya usa: cada fase suma las suyas. `.env.example` lista todas. En local van en `.env.local`.
 
 | Variable | Para qué |
 |---|---|
