@@ -19,8 +19,14 @@ export interface PlanProposer {
 
 export const templateProposer: PlanProposer = {
   async propose(vehicle) {
-    const items = templateProposal(vehicle.fuel).map(({ excludedByDefault: _, ...item }) => ({
-      ...item,
+    const items = templateProposal(vehicle.fuel).map((item) => ({
+      itemId: item.itemId,
+      name: item.name,
+      category: item.category,
+      intervalKm: item.intervalKm,
+      intervalMonths: item.intervalMonths,
+      note: item.note,
+      included: item.included,
       critical: item.critical ?? false,
       warnKm: 1_000,
       warnDays: 30,

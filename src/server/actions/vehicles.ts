@@ -26,6 +26,7 @@ import {
 import { ReadingInputSchema } from '@/server/db/schemas/odometer-reading';
 import { VehicleInputSchema, VehicleUpdateSchema } from '@/server/db/schemas/vehicle';
 import { withTransaction } from '@/server/db/transaction';
+import { ensureDraftProposal } from '@/server/plan/service';
 
 function vehicleFromForm(formData: FormData) {
   return {
@@ -84,8 +85,12 @@ export async function createVehicle(
     return vehicleId;
   });
 
+  // Paso 2: la propuesta de plan (RF-05) se revisa antes de activarla.
+  const created = await getVehicle(ownerId, id);
+  if (created) await ensureDraftProposal(ownerId, created, now);
+
   revalidatePath('/', 'layout');
-  redirect(`/autos/${id}`);
+  redirect(`/autos/${id}/plan/revisar`);
 }
 
 export async function updateVehicle(
