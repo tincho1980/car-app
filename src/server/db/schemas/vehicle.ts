@@ -42,7 +42,12 @@ export const VehicleInputSchema = z.object({
   fuel: z.enum(FUELS, { error: 'Elegí el combustible' }),
   km: KmSchema,
   alias: optionalText(40),
-  plate: optionalText(10).transform((v) => v?.toUpperCase()),
+  plate: z
+    .string()
+    .trim()
+    .max(10)
+    .transform((v) => (v === '' ? undefined : v.toUpperCase()))
+    .optional(),
   purchaseDate: z.date().optional(),
   defaultKmPerDay: z
     .number()
