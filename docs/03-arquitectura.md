@@ -114,13 +114,20 @@ status dentro de cada PlanItem es una caché: se puede reconstruir siempre desde
 ## 5. Motor de alertas (src/core)
 
 ```ts
-// Funciones puras, sin I/O
-kmPerDay(readings, today, defaultKmPerDay): number        // RN-03
-estimatedKm(lastReading, kmPerDay, today): number          // RN-04
-itemStatus(item, lastDone, estKm, kmPerDay, today): Status // RN-01,02,05,06,10 + snooze
-vehicleStatus(vehicle, events, readings, today): PlanItem[]
-shouldNotify(prev: Status, next: Status, lastNotifiedAt, today): boolean // RN-08
+// Funciones puras, sin I/O. Fechas = día calendario como Date a las 00:00 UTC.
+kmPerDay(readings, today, defaultKmPerDay): number                 // RN-03
+estimatedKm(lastReading, kmPerDay, today): number                   // RN-04
+virtualOdometer(readings, defaultKmPerDay): VirtualOdometer         // cambio de tablero
+itemStatus(item, lastDone, estKm, kmPerDay, today): ItemStatus      // RN-01,02,05,06 + posponer
+vehicleStatus({ plan, events, readings, defaultKmPerDay }, today): VehicleStatus // RN-09, RN-10
+shouldNotify(prev, next, lastNotifiedAt, snoozed, today): boolean   // RN-08
 ```
+
+- **Sin último realizado → estado `unknown` ("Sin dato")**: no se calcula vencimiento ni se notifica hasta cargar el dato.
+- **Umbrales (RN-06):** el de km se compara con los km que faltan; el de días, con la fecha de vencimiento por tiempo.
+- **Posponer** no cambia el estado: lo marca `snoozed` y `shouldNotify` devuelve `false`.
+- **Cambio de odómetro:** cada lectura con `odometerReset` suma un desfase (km estimados del tablero viejo a esa fecha − km del nuevo). Todo se compara en km totales recorridos; `vehicleStatus` devuelve los km en el tablero actual.
+- **Notificaciones:** solo cuando el estado empeora (a próximo o vencido) y, si sigue vencido, cada 7 días.
 
 Tests obligatorios (Vitest): el caso de referencia de 02-requerimientos (correa), ítem solo por fecha, solo por km, "desconocido", ítem pospuesto, cambio de odómetro, auto sin lecturas, km/día = 0 (auto parado), evento borrado que cambia el "último realizado".
 

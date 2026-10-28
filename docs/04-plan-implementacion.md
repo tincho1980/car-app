@@ -105,15 +105,15 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 **Objetivo:** el corazón de la app, testeado antes de tener UI.
 
 🤖 **Claude Code** (tests **primero**, después la implementación)
-- [ ] Tipos en `src/core/types.ts`.
-- [ ] `kmPerDay` (RN-03) · `estimatedKm` (RN-04) · `itemStatus` (RN-01, 02, 05, 06, 10 + snooze) · `vehicleStatus` (RN-09) · `shouldNotify` (RN-08).
-- [ ] Tests:
-  - [ ] Caso de referencia (02-requerimientos §3): correa vence ~18/12/2026, pasa a "próximo" ~26/11/2026.
-  - [ ] Solo por fecha · solo por km · último realizado desconocido.
-  - [ ] Pospuesto por fecha y por km.
-  - [ ] Cambio de odómetro · sin lecturas · km/día = 0.
-  - [ ] Borrar el evento más reciente cambia el "último realizado".
-  - [ ] `shouldNotify`: sin transición no notifica; vencido re-notifica a los 7 días.
+- [x] Tipos en `src/core/types.ts`.
+- [x] `kmPerDay` (RN-03) · `estimatedKm` (RN-04) · `itemStatus` (RN-01, 02, 05, 06, 10 + snooze) · `vehicleStatus` (RN-09) · `shouldNotify` (RN-08).
+- [x] Tests:
+  - [x] Caso de referencia (02-requerimientos §3): correa vence ~18/12/2026, pasa a "próximo" ~26/11/2026.
+  - [x] Solo por fecha · solo por km · último realizado desconocido.
+  - [x] Pospuesto por fecha y por km.
+  - [x] Cambio de odómetro · sin lecturas · km/día = 0.
+  - [x] Borrar el evento más reciente cambia el "último realizado".
+  - [x] `shouldNotify`: sin transición no notifica; vencido re-notifica a los 7 días.
 
 **Cómo lo pruebo:** `npm test`; leer los nombres de los tests y confirmar que reflejan las reglas.
 **Listo cuando:** todo verde y `src/core` no importa nada de I/O.
