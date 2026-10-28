@@ -46,6 +46,8 @@ async function main() {
     fuel: 'nafta',
     defaultKmPerDay: 40,
     odometer: odometerSummary(readings, 40, today),
+    plan: [],
+    planApprovedAt: null,
     archivedAt: null,
     createdAt: now,
     updatedAt: now,

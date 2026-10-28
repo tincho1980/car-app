@@ -61,6 +61,8 @@ export async function createVehicle(
         ...vehicle,
         ownerId,
         odometer: odometerSummary([{ date: today, km }], vehicle.defaultKmPerDay, today),
+        plan: [],
+        planApprovedAt: null,
         archivedAt: null,
         createdAt: now,
         updatedAt: now,

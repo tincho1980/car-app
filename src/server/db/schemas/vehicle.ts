@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PlanItemSchema } from '@/server/db/schemas/plan';
 
 export const FUELS = ['nafta', 'diesel', 'gnc', 'nafta-gnc', 'hibrido', 'electrico'] as const;
 
@@ -71,6 +72,9 @@ export const OdometerSummarySchema = z.object({
 export const VehicleSchema = VehicleUpdateSchema.extend({
   ownerId: z.email(),
   odometer: OdometerSummarySchema,
+  // Plan aprobado (RN-14): embebido, son ~20 ítems que se leen siempre con el auto.
+  plan: z.array(PlanItemSchema),
+  planApprovedAt: z.date().nullable(),
   archivedAt: z.date().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
