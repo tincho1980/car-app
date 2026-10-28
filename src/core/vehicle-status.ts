@@ -34,18 +34,21 @@ export function vehicleStatus(input: VehicleInput, today: Date): VehicleStatus {
   const items = input.plan
     .filter((item) => item.active)
     .map((item) => {
+      // El más reciente entre el último evento y el estado inicial.
       const event = latestEventFor(pastEvents, item.itemId);
-      const lastDone: LastDone | undefined = event && {
+      const fromEvent: LastDone | undefined = event && {
         date: event.date,
-        km: toVirtualKm(odometer, event.km, event.date),
+        km: event.km,
         eventId: event.id,
       };
+      const real = mostRecent(fromEvent, item.initialDone ?? undefined);
+      const lastDone = real && { ...real, km: toVirtualKm(odometer, real.km, real.date) };
       const status = itemStatus(item, lastDone, estKm, perDay, today);
       return {
         ...status,
         itemId: item.itemId,
         dueKm: status.dueKm !== undefined ? status.dueKm - odometer.offset : undefined,
-        lastDone: event && { date: event.date, km: event.km, eventId: event.id },
+        lastDone: real,
       };
     });
 
@@ -65,4 +68,11 @@ function latestEventFor(events: MaintenanceEvent[], itemId: string): Maintenance
       const byDate = e.date.getTime() - latest.date.getTime();
       return byDate > 0 || (byDate === 0 && e.km > latest.km) ? e : latest;
     }, undefined);
+}
+
+function mostRecent(a: LastDone | undefined, b: LastDone | undefined): LastDone | undefined {
+  if (!a) return b;
+  if (!b) return a;
+  const byDate = b.date.getTime() - a.date.getTime();
+  return byDate > 0 || (byDate === 0 && b.km > a.km) ? b : a;
 }

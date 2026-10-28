@@ -143,3 +143,74 @@ describe('sin lecturas de odómetro', () => {
     expect(byId(result, 'correa')?.state).toBe('overdue');
   });
 });
+
+describe('estado inicial (initialDone, RF-08)', () => {
+  const conInicial = (initialDone: PlanItemRule['initialDone']) => [
+    rule('correa', { intervalKm: 60_000, intervalMonths: 48, initialDone }),
+  ];
+
+  it('sin eventos, el último realizado sale del estado inicial', () => {
+    const result = vehicleStatus(
+      {
+        plan: conInicial({ date: d('2023-03-10'), km: 82_000 }),
+        events: [],
+        readings,
+        defaultKmPerDay: 40,
+      },
+      today,
+    );
+    expect(byId(result, 'correa')).toMatchObject({
+      state: 'ok',
+      dueKm: 142_000,
+      lastDone: { date: d('2023-03-10'), km: 82_000 },
+    });
+  });
+
+  it('un evento posterior al estado inicial lo reemplaza', () => {
+    const result = vehicleStatus(
+      {
+        plan: conInicial({ date: d('2023-03-10'), km: 82_000 }),
+        events: [{ id: 'c', date: d('2026-05-01'), km: 113_000, itemIds: ['correa'] }],
+        readings,
+        defaultKmPerDay: 40,
+      },
+      today,
+    );
+    expect(byId(result, 'correa')?.lastDone).toMatchObject({ eventId: 'c', km: 113_000 });
+  });
+
+  it('un estado inicial más reciente que el último evento gana', () => {
+    const result = vehicleStatus(
+      {
+        plan: conInicial({ date: d('2026-05-01'), km: 113_000 }),
+        events: [{ id: 'c', date: d('2023-03-10'), km: 82_000, itemIds: ['correa'] }],
+        readings,
+        defaultKmPerDay: 40,
+      },
+      today,
+    );
+    expect(byId(result, 'correa')?.lastDone).toMatchObject({ km: 113_000 });
+    expect(byId(result, 'correa')?.lastDone?.eventId).toBeUndefined();
+  });
+
+  it('marcado como desconocido (null) queda "Sin dato"', () => {
+    const result = vehicleStatus(
+      { plan: conInicial(null), events: [], readings, defaultKmPerDay: 40 },
+      today,
+    );
+    expect(byId(result, 'correa')?.state).toBe('unknown');
+  });
+
+  it('conserva la marca de estimado del estado inicial', () => {
+    const result = vehicleStatus(
+      {
+        plan: conInicial({ date: d('2023-03-10'), km: 82_000, estimated: true }),
+        events: [],
+        readings,
+        defaultKmPerDay: 40,
+      },
+      today,
+    );
+    expect(byId(result, 'correa')?.lastDone?.estimated).toBe(true);
+  });
+});
