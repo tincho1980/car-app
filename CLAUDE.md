@@ -31,6 +31,7 @@ npm test           # Vitest
 npm run typecheck
 npm run lint
 npm run db:indexes # crea índices en Mongo
+npm run db:seed    # Palio de ejemplo (solo sobre una base -dev)
 ```
 
 ## Reglas del proyecto

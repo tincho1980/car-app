@@ -52,6 +52,8 @@ Los colores son variables del `.pen` con modo claro/oscuro. En código van como 
 | `--muted` / `-soft` | `#9AA3AF` / `#ECEEF2` | `#5F6772` / `#22262D` | Sin dato |
 | `--odo` / `--odo-digit` | `#0D0F12` / `#1E2229` | `#1E2229` / `#2A2F37` | Tarjeta odómetro |
 
+La tarjeta odómetro es oscura en los dos modos. Su texto y su botón usan alias de los tokens anteriores: `--odo-text` (claro: `--surface`; oscuro: `--text`), `--odo-button` (igual que `--odo-text`) y `--odo-button-text` (claro: `--text`; oscuro: `--bg`).
+
 **Tipografía:** Inter (UI) y JetBrains Mono (km, montos, intervalos), ambas con `next/font/google`. Escala: título 24/700 · cuerpo 15/400 · secundario 13/400 · etiqueta 12/700 con tracking 0.8 · odómetro 34/700 mono.
 
 **Forma:** radios de 12 (campos), 14 (botones), 16 (filas), 18–22 (tarjetas), 26 (hojas). Alto mínimo táctil: 44 px; botones de 52 px. Íconos: **lucide** (`lucide-react`), los mismos nombres que en el `.pen`.

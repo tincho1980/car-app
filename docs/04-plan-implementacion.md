@@ -121,11 +121,11 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 ## F03 · Vehículos y odómetro
 
 🤖 **Claude Code** (usar skill `/nueva-coleccion` para cada colección)
-- [ ] Colecciones `vehicles` y `odometerReadings` (esquema Zod + repo + índices).
-- [ ] Server Actions: crear, editar, archivar/reactivar; registrar lectura con validación RN-07.
-- [ ] Al crear: lectura inicial (`source: onboarding`); recalcular `vehicle.odometer` con `src/core`.
-- [ ] Pantallas: `/autos`, `/autos/nuevo`, `/autos/[id]` (encabezado con km ≈), `/autos/[id]/editar`, hoja **Cargar km**.
-- [ ] `npm run db:seed`: crea el Palio de ejemplo con lecturas, solo en desarrollo.
+- [x] Colecciones `vehicles` y `odometerReadings` (esquema Zod + repo + índices).
+- [x] Server Actions: crear, editar, archivar/reactivar; registrar lectura con validación RN-07.
+- [x] Al crear: lectura inicial (`source: onboarding`); recalcular `vehicle.odometer` con `src/core`.
+- [x] Pantallas: `/autos`, `/autos/nuevo`, `/autos/[id]` (encabezado con km ≈), `/autos/[id]/editar`, hoja **Cargar km**.
+- [x] `npm run db:seed`: crea el Palio de ejemplo con lecturas, solo en desarrollo.
 
 **Cómo lo pruebo:** dar de alta el **Fiat Palio 1.4 Fire 2011, 120.000 km**; cargar una lectura; intentar cargar un km menor (debe frenar).
 **Listo cuando:** el Palio existe en el deploy de `develop` y el km estimado avanza día a día.

@@ -36,11 +36,12 @@ import { env } from '@/env';
 
 const g = globalThis as unknown as { _mongo?: MongoClient };
 
-export const client = g._mongo ?? new MongoClient(env.MONGODB_URI, { maxPoolSize: 5 });
+export const client =
+  g._mongo ?? new MongoClient(env.MONGODB_URI, { maxPoolSize: 5, ignoreUndefined: true });
 if (process.env.NODE_ENV !== 'production') g._mongo = client;
 attachDatabasePool(client);
 
-export const db = client.db('carapp');
+export const db = client.db(env.MONGODB_DB); // carapp en Vercel, carapp-dev en local
 ```
 
 ### 2.2 Runtime: nada de Edge
@@ -103,7 +104,7 @@ Criterio: embeber lo que se lee siempre junto y es acotado (el plan de un auto, 
 | vehicles | _id, ownerId, alias, make, model, year, version, fuel, plate, purchaseDate, defaultKmPerDay, archivedAt,<br>odometer: { lastKm, lastDate, kmPerDay, readingsCount },<br>plan: [PlanItem] (embebido) | { ownerId, archivedAt } |
 | PlanItem (sub-doc) | itemId, name, category, intervalKm?, intervalMonths?, warnKm, warnDays, critical, active, origin (ai\|template\|manual), edited, verifiedAt?, approvedAt, snooze?: { untilDate?, untilKm? },<br>status: { lastDoneDate?, lastDoneKm?, lastEventId?, dueKm?, dueDate?, estDueDate, state (ok\|soon\|overdue\|unknown), estimated, notifiedState, notifiedAt } | — |
 | events | _id, ownerId, vehicleId, date, km, type, itemIds[], totalCost, currency ("ARS"), shop, parts: [{ desc, brand, partNumber, qty, unitPrice }], notes, attachments: [{ key, mime, size }], source (manual\|ai), aiRunId?, createdAt, updatedAt | { vehicleId, date: -1 }<br>{ vehicleId, itemIds } |
-| odometerReadings | _id, vehicleId, date, km, source (onboarding\|event\|manual), eventId?, odometerReset | { vehicleId, date: -1 } |
+| odometerReadings | _id, ownerId, vehicleId, date, km, source (onboarding\|event\|manual), eventId?, odometerReset | { vehicleId, date: -1 } |
 | planProposals | _id, vehicleId, status (draft\|approved\|discarded), origin (ai\|template), items[], sources[], aiRunId, createdAt | { vehicleId, status } |
 | aiRuns | _id, kind (ticket\|plan\|review), vehicleId, model, promptVersion, input (refs, no la imagen), output (crudo + parseado), finalDiff (qué cambió el usuario), tokens, costUsd, ms, status, createdAt | { kind, createdAt: -1 } |
 | pushSubscriptions | _id, ownerId, endpoint (único), keys { p256dh, auth }, userAgent, createdAt, lastOkAt | { endpoint } único |
@@ -183,7 +184,7 @@ carapp/
 
 | Variable | Para qué |
 |---|---|
-| MONGODB_URI | Conexión a Atlas |
+| MONGODB_URI, MONGODB_DB | Conexión a Atlas y base: `carapp` en Vercel, `carapp-dev` en local (el seed solo corre sobre una base `-dev`) |
 | AUTH_SECRET, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, ALLOWED_EMAIL | Auth |
 | R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET | Fotos |
 | ANTHROPIC_API_KEY, AI_MODEL_TICKET, AI_MODEL_PLAN | IA |
