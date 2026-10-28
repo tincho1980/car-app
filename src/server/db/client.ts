@@ -6,7 +6,9 @@ import { env } from '@/env';
 // Único MongoClient de la app (docs/03-arquitectura.md §2.1).
 const g = globalThis as unknown as { _mongo?: MongoClient };
 
-export const client = g._mongo ?? new MongoClient(env.MONGODB_URI, { maxPoolSize: 5 });
+// ignoreUndefined: un opcional vacío no se guarda (si no, el driver lo guarda como null).
+export const client =
+  g._mongo ?? new MongoClient(env.MONGODB_URI, { maxPoolSize: 5, ignoreUndefined: true });
 if (process.env.NODE_ENV !== 'production') g._mongo = client;
 attachDatabasePool(client);
 
