@@ -1,6 +1,8 @@
 import 'server-only';
 import { ObjectId, type ClientSession, type WithId } from 'mongodb';
+import { z } from 'zod';
 import { db } from '@/server/db/client';
+import { PlanItemSchema, type PlanItem } from '@/server/db/schemas/plan';
 import {
   OdometerSummarySchema,
   VehicleSchema,
@@ -15,7 +17,13 @@ const vehicles = db.collection<VehicleDoc>('vehicles');
 export type Vehicle = VehicleDoc & { id: string };
 
 function toVehicle({ _id, ...doc }: WithId<VehicleDoc>): Vehicle {
-  return { ...doc, id: _id.toString() };
+  // Los autos creados antes de F04 no tienen plan.
+  return {
+    ...doc,
+    plan: doc.plan ?? [],
+    planApprovedAt: doc.planApprovedAt ?? null,
+    id: _id.toString(),
+  };
 }
 
 // Un id inválido en la URL se trata como "no existe".
@@ -86,4 +94,24 @@ export async function setOdometer(
     { $set: { odometer: OdometerSummarySchema.parse(odometer), updatedAt: now } },
     { session },
   );
+}
+
+// Reemplaza el plan entero (son ~20 ítems embebidos). approvedAt solo al aprobar.
+export async function setPlan(
+  ownerId: string,
+  id: string,
+  plan: PlanItem[],
+  now: Date,
+  approvedAt?: Date,
+): Promise<boolean> {
+  const filter = byId(ownerId, id);
+  if (!filter) return false;
+  const { matchedCount } = await vehicles.updateOne(filter, {
+    $set: {
+      plan: z.array(PlanItemSchema).parse(plan),
+      updatedAt: now,
+      ...(approvedAt && { planApprovedAt: approvedAt }),
+    },
+  });
+  return matchedCount === 1;
 }

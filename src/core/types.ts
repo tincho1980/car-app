@@ -29,12 +29,16 @@ export type PlanItemRule = {
   // false = "no aplica" (RN-10): no genera estado ni alertas.
   active: boolean;
   snooze?: Snooze;
+  // Estado inicial (RF-08): cuándo se hizo antes de empezar a usar la app. null = "No sé".
+  initialDone?: LastDone | null;
 };
 
 export type LastDone = {
   date: Date;
   km: number;
   eventId?: string;
+  // La fecha o el km se estimó a partir del otro dato (se muestra con ≈).
+  estimated?: boolean;
 };
 
 export type ItemState = 'ok' | 'soon' | 'overdue' | 'unknown';

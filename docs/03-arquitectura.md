@@ -101,11 +101,11 @@ Criterio: embeber lo que se lee siempre junto y es acotado (el plan de un auto, 
 
 | Colección | Campos principales | Índices |
 |---|---|---|
-| vehicles | _id, ownerId, alias, make, model, year, version, fuel, plate, purchaseDate, defaultKmPerDay, archivedAt,<br>odometer: { lastKm, lastDate, kmPerDay, readingsCount },<br>plan: [PlanItem] (embebido) | { ownerId, archivedAt } |
-| PlanItem (sub-doc) | itemId, name, category, intervalKm?, intervalMonths?, warnKm, warnDays, critical, active, origin (ai\|template\|manual), edited, verifiedAt?, approvedAt, snooze?: { untilDate?, untilKm? },<br>status: { lastDoneDate?, lastDoneKm?, lastEventId?, dueKm?, dueDate?, estDueDate, state (ok\|soon\|overdue\|unknown), estimated, notifiedState, notifiedAt } | — |
+| vehicles | _id, ownerId, alias, make, model, year, version, fuel, plate, purchaseDate, defaultKmPerDay, archivedAt,<br>odometer: { lastKm, lastDate, kmPerDay, readingsCount },<br>plan: [PlanItem] (embebido), planApprovedAt | { ownerId, archivedAt } |
+| PlanItem (sub-doc) | itemId, name, category, intervalKm?, intervalMonths?, warnKm, warnDays, critical, active, origin (ai\|template\|manual), edited, verifiedAt?, approvedAt, note?, snooze?: { untilDate?, untilKm? },<br>initialDone?: { date, km, estimated? } | null (estado inicial, RF-08: dato fuente; null = "No sé"),<br>status: { lastDone?: { date, km, eventId?, estimated? }, dueKm?, dueDate?, estDueDate?, state (ok|soon|overdue|unknown), estimated, notifiedState?, notifiedAt? } (caché)\|soon\|overdue\|unknown), estimated, notifiedState, notifiedAt } | — |
 | events | _id, ownerId, vehicleId, date, km, type, itemIds[], totalCost, currency ("ARS"), shop, parts: [{ desc, brand, partNumber, qty, unitPrice }], notes, attachments: [{ key, mime, size }], source (manual\|ai), aiRunId?, createdAt, updatedAt | { vehicleId, date: -1 }<br>{ vehicleId, itemIds } |
 | odometerReadings | _id, ownerId, vehicleId, date, km, source (onboarding\|event\|manual), eventId?, odometerReset | { vehicleId, date: -1 } |
-| planProposals | _id, vehicleId, status (draft\|approved\|discarded), origin (ai\|template), items[], sources[], aiRunId, createdAt | { vehicleId, status } |
+| planProposals | _id, ownerId, vehicleId, status (draft\|approved\|discarded), origin (ai\|template), items[] (con included, verified, edited), sources[], aiRunId?, createdAt, updatedAt | { vehicleId, status } |
 | aiRuns | _id, kind (ticket\|plan\|review), vehicleId, model, promptVersion, input (refs, no la imagen), output (crudo + parseado), finalDiff (qué cambió el usuario), tokens, costUsd, ms, status, createdAt | { kind, createdAt: -1 } |
 | pushSubscriptions | _id, ownerId, endpoint (único), keys { p256dh, auth }, userAgent, createdAt, lastOkAt | { endpoint } único |
 | notificationLog | vehicleId, itemId?, kind (state\|odometer), state, sentAt, ok | TTL 180 días sobre sentAt |
@@ -128,6 +128,8 @@ shouldNotify(prev, next, lastNotifiedAt, snoozed, today): boolean   // RN-08
 - **Umbrales (RN-06):** el de km se compara con los km que faltan; el de días, con la fecha de vencimiento por tiempo.
 - **Posponer** no cambia el estado: lo marca `snoozed` y `shouldNotify` devuelve `false`.
 - **Cambio de odómetro:** cada lectura con `odometerReset` suma un desfase (km estimados del tablero viejo a esa fecha − km del nuevo). Todo se compara en km totales recorridos; `vehicleStatus` devuelve los km en el tablero actual.
+- **Estado inicial:** cada ítem guarda `initialDone` (cuándo se hizo antes de usar la app). `vehicleStatus` toma el más reciente entre eso y los eventos. Si solo se sabe la fecha o el km, `estimateLastDone` completa el otro con las lecturas y el km/día, y lo marca como estimado.
+- **Propuesta de plan:** `PlanProposer` (`src/server/plan/proposer.ts`) con `templateProposer` (Anexo A). En F10 se suma la IA detrás de la misma interfaz. Los ítems descartados al revisar se aprueban como "no aplica".
 - **Notificaciones:** solo cuando el estado empeora (a próximo o vencido) y, si sigue vencido, cada 7 días.
 
 Tests obligatorios (Vitest): el caso de referencia de 02-requerimientos (correa), ítem solo por fecha, solo por km, "desconocido", ítem pospuesto, cambio de odómetro, auto sin lecturas, km/día = 0 (auto parado), evento borrado que cambia el "último realizado".
