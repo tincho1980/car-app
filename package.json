@@ -21,6 +21,7 @@
     "lucide-react": "^1.63.0",
     "mongodb": "^7.7.0",
     "next": "16.1.6",
+    "next-auth": "5.0.0-beta.32",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "server-only": "^0.0.1",
@@ -29,6 +30,8 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22",
     "@types/react": "^19",
