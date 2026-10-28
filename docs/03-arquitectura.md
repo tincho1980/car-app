@@ -12,7 +12,7 @@ Deriva de 02-requerimientos.md. Restricciones de partida: base de datos MongoDB 
 | D-02 | Base de datos | MongoDB Atlas M0 (free) | 512 MB alcanzan de sobra: sin fotos adentro, el historial de años de varios autos pesa pocos MB. |
 | D-03 | Acceso a datos | Driver oficial mongodb + Zod (sin ODM) | Prisma 7 no soporta Mongo; Prisma 8 lo tiene en early access. Prisma 6 sí lo soporta, pero es una rama vieja: pasar a la 8 implicaría reescribir el acceso a datos. Mongoose suma peso y el problema de re-registrar modelos en hot reload. Para ~7 colecciones, driver + Zod alcanza y no envejece. |
 | D-04 | Hosting | Vercel Hobby (uso personal, no comercial) | Deploy de Next.js nativo, Cron incluido, attachDatabasePool para Mongo. Cloudflare Workers evaluado y descartado (ver 2.4). |
-| D-05 | Auth | Auth.js con Google, sesión JWT, allowlist de 1 email | Sin adapter de base: la auth no toca Mongo. Nadie más puede entrar. |
+| D-05 | Auth | Auth.js v5 (`next-auth@5`, beta fijada) con Google, sesión JWT, allowlist de 1 email | Sin adapter de base: la auth no toca Mongo. Nadie más puede entrar. |
 | D-06 | Fotos de tickets | Cloudflare R2 (API S3, URLs prefirmadas) | 10 GB gratis y sin costo de egreso. Las fotos NUNCA van a Mongo (GridFS se comería los 512 MB). |
 | D-07 | IA | Vercel AI SDK + Anthropic (Claude) | Visión + salida estructurada con esquema + web search. El SDK permite cambiar de proveedor sin reescribir (RNF-07). |
 | D-08 | Push | Web Push estándar (VAPID) con web-push + service worker propio | Funciona en Chrome Android sin servicios de terceros. Sin Firebase. |

@@ -33,7 +33,7 @@
 
 ## Tokens → Tailwind
 
-Los colores son variables del `.pen` con modo claro/oscuro. En código van como CSS variables (`:root` y `.dark`) mapeadas en Tailwind/shadcn con los **mismos nombres**:
+Los colores son variables del `.pen` con modo claro/oscuro. En código van como CSS variables (`:root` y, para el oscuro, `@media (prefers-color-scheme: dark)`: el tema sigue al sistema sin JS) mapeadas en Tailwind/shadcn con los **mismos nombres**:
 
 | Token | Claro | Oscuro | Uso |
 |---|---|---|---|
