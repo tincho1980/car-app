@@ -53,7 +53,7 @@ Un solo usuario, sin roles ni multi-tenant ni cobro. El modelo de datos igual as
 | ID | Regla |
 |---|---|
 | RN-01 | Cada ítem tiene intervalo en km, en meses, o ambos. Vence lo que ocurra primero. |
-| RN-02 | Próximo vencimiento = último realizado + intervalo (km y/o fecha). Sin último realizado conocido → toma el km/fecha de alta del auto y se marca "estimado". |
+| RN-02 | Próximo vencimiento = último realizado + intervalo (km y/o fecha). Sin último realizado conocido → el ítem queda "Sin dato": no tiene vencimiento ni genera alertas hasta que se carga cuándo se hizo. |
 | RN-03 | Km diario promedio = (última lectura − lectura de hace ~90 días) / días entre ambas. Con menos de 2 lecturas se usa un default editable (ej. 40 km/día). |
 | RN-04 | Km actual estimado = última lectura + km/día × días transcurridos. Siempre se muestra como estimado hasta que se confirma. |
 | RN-05 | Fecha estimada de vencimiento por km = hoy + (km de vencimiento − km estimado) / km diario. Se compara con el vencimiento por fecha y gana la más cercana. |

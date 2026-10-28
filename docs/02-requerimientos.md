@@ -27,7 +27,7 @@ Derivado de 01-relevamiento.md. Prioridades MoSCoW: Must = MVP, Should = v1 comp
 | RF-05 | Al crear un vehículo, la IA propone su plan de mantenimiento a partir de marca, modelo, año, versión/motor, combustible y km. | Devuelve ítems con intervalo km y/o meses, nota y confianza (alta/media/baja). La propuesta se muestra con aviso visible: "Sugerido por IA — verificalo con el manual o tu taller". El usuario puede aprobar todo, o modificar/descartar ítems y luego aprobar. Ítems críticos (correa, líquido de frenos) resaltados y con check de verificado. Mientras el plan no esté aprobado, no genera alertas (RN-14). Si la IA falla o tarda > 30 s → plantilla genérica (Anexo A), con el mismo flujo de aprobación. El plan es por vehículo. | Must |
 | RF-06 | Editar ítem: nombre, categoría, intervalo km, intervalo meses, umbral de aviso, activo / no aplica. | Al menos uno de los dos intervalos es obligatorio. Guardar recalcula vencimientos (RN-09). | Must |
 | RF-07 | Agregar ítems personalizados. | Se comportan igual que los propuestos (origen = manual, RN-12). | Must |
-| RF-08 | Estado inicial por ítem: último realizado (fecha/km) o "desconocido". | Wizard post-alta recorre los ítems activos; "desconocido" aplica RN-02 y marca el vencimiento como estimado. | Must |
+| RF-08 | Estado inicial por ítem: último realizado (fecha/km) o "desconocido". | Wizard post-alta recorre los ítems activos; "desconocido" deja el ítem "Sin dato" (RN-02): sin vencimiento ni alertas hasta cargar el dato. | Must |
 
 ### M4 · Eventos (historial)
 
