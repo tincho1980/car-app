@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   calendarDayInBuenosAires,
+  formatMoney,
+  parseMoney,
   formatDate,
   formatKm,
   parseDateInput,
@@ -44,5 +46,20 @@ describe('fechas de día calendario (00:00 UTC)', () => {
     expect(calendarDayInBuenosAires(new Date('2026-10-28T03:30:00Z'))).toEqual(
       new Date('2026-10-28T00:00:00Z'),
     );
+  });
+});
+
+describe('montos en centavos', () => {
+  it('se muestran en pesos con punto de miles', () => {
+    expect(formatMoney(8_500_000)).toBe('$ 85.000');
+    expect(formatMoney(8_500_050)).toBe('$ 85.000,50');
+    expect(formatMoney(0)).toBe('$ 0');
+  });
+
+  it('se leen en pesos y se pasan a centavos', () => {
+    expect(parseMoney('$ 85.000')).toBe(8_500_000);
+    expect(parseMoney('85000,5')).toBe(8_500_050);
+    expect(parseMoney('')).toBeUndefined();
+    expect(parseMoney('abc')).toBeUndefined();
   });
 });
