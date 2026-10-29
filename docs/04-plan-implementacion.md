@@ -149,12 +149,12 @@ Tamaño: S ≈ una sesión de trabajo · M ≈ 2–3 · L ≈ 4 o más.
 ## F05 · Eventos e historial
 
 🤖 **Claude Code**
-- [ ] Colección `events` (montos en centavos).
-- [ ] `/autos/[id]/eventos/nuevo` según 05-pantallas, con `?items=` para precargar.
-- [ ] Al guardar: lectura de odómetro (`source: event`) + recálculo.
-- [ ] `/eventos/[id]`: editar y eliminar con confirmación y recálculo.
-- [ ] `/autos/[id]/historial` con filtros y `/autos/[id]/historial/item/[itemId]`.
-- [ ] Toast con el próximo vencimiento al guardar.
+- [x] Colección `events` (montos en centavos).
+- [x] `/autos/[id]/eventos/nuevo` según 05-pantallas, con `?items=` para precargar.
+- [x] Al guardar: lectura de odómetro (`source: event`) + recálculo.
+- [x] `/eventos/[id]`: editar y eliminar con confirmación y recálculo.
+- [x] `/autos/[id]/historial` con filtros y `/autos/[id]/historial/item/[itemId]`.
+- [x] Toast con el próximo vencimiento al guardar.
 
 **Cómo lo pruebo:** cargar el último service real del Palio; ver que el cambio de aceite se reprograma; borrarlo y ver que vuelve atrás.
 **Listo cuando:** un service se carga en menos de 60 s desde el celu.
