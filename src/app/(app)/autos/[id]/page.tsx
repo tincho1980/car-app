@@ -4,28 +4,48 @@ import { ClipboardCheck, Ellipsis } from 'lucide-react';
 import type { ItemState } from '@/core/types';
 import { ItemRow } from '@/components/item-row';
 import { OdometerCard } from '@/components/odometer-card';
+import { SavedToast } from '@/components/saved-toast';
 import { Button } from '@/components/ui/button';
-import { calendarDayInBuenosAires, toDateInput } from '@/lib/format';
+import { calendarDayInBuenosAires, formatDate, formatKm, toDateInput } from '@/lib/format';
 import { vehicleView } from '@/lib/vehicle-view';
+import { undoEvent } from '@/server/actions/events';
 import { startPlan } from '@/server/actions/plan';
 import { unarchiveVehicle } from '@/server/actions/vehicles';
 import { requireUser } from '@/server/auth';
+import { getEvent } from '@/server/db/repos/events';
 import { getVehicle, type Vehicle } from '@/server/db/repos/vehicles';
+import { EVENT_TYPE_LABELS } from '@/server/db/schemas/event';
 import { loadPlanStatus } from '@/server/plan/service';
 
-// Detalle del auto (frame 02). En F03, el encabezado con el km estimado; los vencimientos
-// llegan con el plan (F04 a F06).
-export default async function VehiclePage({ params }: { params: Promise<{ id: string }> }) {
+// Detalle del auto (frame 02): km estimado y vencimientos. Con ?evento= muestra el toast del
+// evento recién guardado (frame 09).
+export default async function VehiclePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ evento?: string }>;
+}) {
   const { id } = await params;
+  const { evento } = await searchParams;
   const { ownerId } = await requireUser();
   const vehicle = await getVehicle(ownerId, id);
   if (!vehicle) notFound();
 
   const today = calendarDayInBuenosAires(new Date());
   const view = vehicleView(vehicle, today);
+  const toast = evento ? await savedToast(ownerId, vehicle, evento, today) : null;
 
   return (
     <>
+      {toast && (
+        <SavedToast
+          key={evento}
+          title={toast.title}
+          detail={toast.detail}
+          undo={undoEvent.bind(null, evento!)}
+        />
+      )}
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-xs font-bold tracking-[0.8px] text-text-3 uppercase">
@@ -117,9 +137,17 @@ async function Dues({
     <section className="mt-6 flex flex-col gap-3">
       <div className="flex items-baseline justify-between">
         <h2 className="text-xs font-bold tracking-[0.8px] text-text-3 uppercase">Vencimientos</h2>
-        <Link href={`/autos/${vehicle.id}/plan`} className="text-sm font-semibold text-accent">
-          Ver plan
-        </Link>
+        <span className="flex gap-4">
+          <Link
+            href={`/autos/${vehicle.id}/historial`}
+            className="text-sm font-semibold text-accent"
+          >
+            Historial
+          </Link>
+          <Link href={`/autos/${vehicle.id}/plan`} className="text-sm font-semibold text-accent">
+            Ver plan
+          </Link>
+        </span>
       </div>
       {pending > 0 && (
         <Link
@@ -150,4 +178,29 @@ async function Dues({
       </ul>
     </section>
   );
+}
+
+// "Service registrado · Próximo cambio de aceite y filtro de aceite: 131.350 km" (frame 09).
+async function savedToast(ownerId: string, vehicle: Vehicle, eventId: string, today: Date) {
+  const event = await getEvent(ownerId, eventId);
+  if (!event || event.vehicleId !== vehicle.id) return null;
+
+  const title = `${EVENT_TYPE_LABELS[event.type]} registrado`;
+  const itemId = event.itemIds[0];
+  const item = vehicle.plan.find((i) => i.itemId === itemId);
+  if (!item) return { title, detail: 'Guardado en el historial.' };
+
+  const status = (await loadPlanStatus(ownerId, vehicle, today)).items.find(
+    (s) => s.itemId === itemId,
+  );
+  const next =
+    status?.dueKm !== undefined
+      ? `${formatKm(status.dueKm)} km`
+      : status?.dueDate
+        ? formatDate(status.dueDate)
+        : undefined;
+  return {
+    title,
+    detail: next ? `Próximo ${item.name.toLowerCase()}: ${next}` : 'Guardado en el historial.',
+  };
 }

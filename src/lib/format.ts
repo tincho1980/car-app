@@ -38,3 +38,17 @@ export function calendarDayInBuenosAires(instant: Date): Date {
   const day = instant.toLocaleDateString('en-CA', { timeZone: 'America/Buenos_Aires' });
   return new Date(`${day}T00:00:00Z`);
 }
+
+// Montos: se guardan en centavos (enteros, ARS) y se muestran "$ 85.000" (o "$ 85.000,50").
+export function formatMoney(cents: number): string {
+  const pesos = Math.trunc(cents / 100);
+  const rest = Math.abs(cents % 100);
+  return `$ ${formatKm(pesos)}${rest ? `,${String(rest).padStart(2, '0')}` : ''}`;
+}
+
+// "$ 85.000" o "85.000,50" → centavos. Vacío o inválido → undefined.
+export function parseMoney(value: string): number | undefined {
+  const clean = value.replace(/[$\s.]/g, '').replace(',', '.');
+  if (clean === '' || !/^\d+(\.\d{1,2})?$/.test(clean)) return undefined;
+  return Math.round(Number(clean) * 100);
+}

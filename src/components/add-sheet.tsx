@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Car, ChevronRight, PenLine, Plus, type LucideIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Car, ChevronRight, PenLine, Plus, Wrench, type LucideIcon } from 'lucide-react';
 import { ReadingSheet } from '@/components/reading-sheet';
 import {
   Sheet,
@@ -21,17 +22,30 @@ export type AddSheetVehicle = {
   lastDate: string;
 };
 
-// Hoja "＋ Cargar" (frame 03, docs/05). Hoy: Solo los km. F05 suma "Service o trabajo" y F09
-// "Foto del ticket". Con más de un auto, primero se elige cuál.
+// Hoja "＋ Cargar" (frame 03, docs/05): Service o trabajo y Solo los km. F09 suma "Foto del
+// ticket". Con más de un auto, primero se elige cuál.
 export function AddSheet({ vehicles, today }: { vehicles: AddSheetVehicle[]; today: string }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'actions' | 'choose'>('actions');
+  const [mode, setMode] = useState<'km' | 'service'>('km');
+  const router = useRouter();
   const [readingFor, setReadingFor] = useState<AddSheetVehicle | null>(null);
   const single = vehicles.length === 1 ? vehicles[0] : undefined;
 
   function openReading(vehicle: AddSheetVehicle) {
     setOpen(false);
     setReadingFor(vehicle);
+  }
+
+  function openService(vehicle: AddSheetVehicle) {
+    setOpen(false);
+    router.push(`/autos/${vehicle.id}/eventos/nuevo`);
+  }
+
+  function choose(next: 'km' | 'service') {
+    if (single) return next === 'km' ? openReading(single) : openService(single);
+    setMode(next);
+    setStep('choose');
   }
 
   return (
@@ -80,16 +94,24 @@ export function AddSheet({ vehicles, today }: { vehicles: AddSheetVehicle[]; tod
                   icon={Car}
                   title={vehicle.title}
                   detail={`≈ ${formatKm(vehicle.estimatedKm)} km`}
-                  onClick={() => openReading(vehicle)}
+                  onClick={() => (mode === 'km' ? openReading(vehicle) : openService(vehicle))}
                 />
               ))
             ) : (
-              <Option
-                icon={PenLine}
-                title="Solo los km"
-                detail="Actualizá el odómetro en 2 segundos."
-                onClick={() => (single ? openReading(single) : setStep('choose'))}
-              />
+              <>
+                <Option
+                  icon={Wrench}
+                  title="Service o trabajo"
+                  detail="Cambio de aceite, reparación, cubiertas…"
+                  onClick={() => choose('service')}
+                />
+                <Option
+                  icon={PenLine}
+                  title="Solo los km"
+                  detail="Actualizá el odómetro en 2 segundos."
+                  onClick={() => choose('km')}
+                />
+              </>
             )}
           </div>
         </SheetContent>
