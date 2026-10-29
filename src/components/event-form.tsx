@@ -120,7 +120,7 @@ export function EventForm({
 
       <section className="flex flex-col gap-2">
         <h2 className="text-xs font-bold tracking-[0.8px] text-text-3 uppercase">Tipo</h2>
-        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+        <div className="scrollbar-none -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
           {EVENT_TYPES.map((t) => (
             <Chip key={t} selected={type === t} onClick={() => setType(t)}>
               {t === 'service' && <Wrench className="size-4" />}

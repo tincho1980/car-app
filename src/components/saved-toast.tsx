@@ -38,7 +38,7 @@ export function SavedToast({
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-[15px] font-semibold">{title}</span>
-        <span className="block truncate text-sm text-text-3">{detail}</span>
+        <span className="line-clamp-2 block text-sm text-text-3">{detail}</span>
       </span>
       <form action={undo}>
         <button type="submit" className="px-1 text-[15px] font-semibold text-accent">

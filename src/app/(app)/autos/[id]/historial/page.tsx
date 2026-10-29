@@ -72,7 +72,7 @@ export default async function HistoryPage({
         />
       </header>
 
-      <nav className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1" aria-label="Tipo">
+      <nav className="scrollbar-none -mx-4 flex gap-2 overflow-x-auto px-4 pb-1" aria-label="Tipo">
         <TypeChip href={href({ tipo: undefined })} selected={!type}>
           Todos
         </TypeChip>
