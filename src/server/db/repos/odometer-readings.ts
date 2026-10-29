@@ -27,3 +27,21 @@ export async function insertReading(
   const { insertedId } = await readings.insertOne(OdometerReadingSchema.parse(doc), { session });
   return insertedId.toString();
 }
+
+// La lectura que generó un evento (source: event) sigue al evento: se edita y se borra con él.
+export async function updateReadingOfEvent(
+  ownerId: string,
+  eventId: string,
+  data: { date: Date; km: number },
+  session?: ClientSession,
+): Promise<void> {
+  await readings.updateOne({ ownerId, eventId }, { $set: data }, { session });
+}
+
+export async function deleteReadingOfEvent(
+  ownerId: string,
+  eventId: string,
+  session?: ClientSession,
+): Promise<void> {
+  await readings.deleteOne({ ownerId, eventId }, { session });
+}
